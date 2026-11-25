@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Request technology help | HourlyTechs" description="Request hourly remote technology support or send a general inquiry.">
+<section class="block request-section"><div class="wrap request-grid"><div><h1>Request tech help</h1><p class="lead">Tell us what you need and when you would prefer assistance.</p><p>HourlyTechs is preparing its Arizona service launch. Requests are inquiries, not confirmed appointments. No payment is required to submit.</p><a class="plain" href="/#pricing">View planned pricing →</a></div>
+<form id="request-form" class="request-form" action="https://formspree.io/f/xdegbdqd" method="POST">
+<label>What can we help with?<select name="inquiry_type" id="inquiry-type" required><option value="Tech support">Request tech support</option><option value="General inquiry">General inquiry</option></select></label>
+<fieldset id="support-fields"><legend>Support details</legend>
+<label>Service<select id="request-service" name="service" required><option value="">Select a service</option><option>Personal technology</option><option>Business software</option><option>Advanced IT</option><option>AI &amp; automation</option><option>Not sure</option></select></label>
+<label>When do you need help?<select name="timing" id="request-timing" required><option value="">Select a preference</option><option>As soon as available</option><option>Schedule ahead</option><option>Flexible</option></select></label>
+<label id="preferred-field" hidden>Preferred date or time (optional)<input name="preferred_time" placeholder="e.g. Tuesday afternoon, Arizona time" maxlength="160" disabled/></label>
+<p id="rate-preview" class="rate-preview" aria-live="polite" hidden></p></fieldset>
+<fieldset id="general-fields" hidden disabled><legend>Inquiry details</legend><label>Topic<select name="topic" required><option value="">Select a topic</option><option>General question</option><option>Partnership</option><option>Media or research</option><option>Privacy request</option><option>Other</option></select></label></fieldset>
+<div class="request-pair"><label>Name<input name="name" autocomplete="name" required maxlength="120"/></label><label>Email<input name="email" type="email" autocomplete="email" required maxlength="254"/></label></div>
+<div class="request-pair"><label>Phone (optional)<input name="phone" type="tel" autocomplete="tel" maxlength="50"/></label><label>City / state (optional)<input name="location" autocomplete="address-level2" maxlength="120"/></label></div>
+<label><span id="message-label">Describe the issue</span><textarea name="message" rows="5" required maxlength="5000" placeholder="Tell us what you need help with"></textarea></label>
+<p class="note">Do not include passwords, verification codes, payment details or other sensitive information. See our <a href="/privacy/">privacy policy</a>.</p>
+<input type="hidden" name="_subject" value="HourlyTechs inquiry" />
+<div class="request-trap" aria-hidden="true"><label>Leave empty<input name="_gotcha" tabindex="-1" autocomplete="off"/></label></div>
+<button class="button" type="submit" id="request-submit">Request tech help</button>
+<p id="request-status" role="status" aria-live="polite"></p></form></div></section>
+</Base>
+<style>
+.request-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:60px;align-items:start}.request-grid h1{font-size:clamp(42px,5vw,64px)}.request-form{padding:32px;background:#fff;border:1px solid #cdd8e5;border-radius:9px;box-shadow:0 12px 30px #152e470d}.request-section{background:#edf3fa}.request-form label{display:block;font-weight:700;font-size:14px;margin-bottom:16px}.request-form input,.request-form select,.request-form textarea{display:block;width:100%;margin-top:5px;border:1px solid #b6c5d5;border-radius:5px;padding:11px 12px;font:inherit;font-weight:400;color:#172739;background:white}.request-form textarea{resize:vertical}.request-form fieldset{border:0;padding:0;margin:0 0 14px;min-width:0}.request-form legend{font-size:16px;font-weight:700;margin-bottom:12px}.request-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}.request-form [hidden]{display:none!important}.request-form button{border:0;cursor:pointer;margin-top:18px}.request-form button:disabled{opacity:.55;cursor:not-allowed}.request-form .note a{text-decoration:underline}.request-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.rate-preview{background:#edf3fa;padding:12px;border-radius:5px;color:#2356b5;font-weight:700;font-size:14px}#request-status{margin:12px 0 0;font-size:14px}@media(max-width:850px){.request-grid{grid-template-columns:1fr;gap:28px}}@media(max-width:520px){.request-form{padding:20px}.request-pair{grid-template-columns:1fr;gap:0}}
+</style>
+<script>
+const form=document.querySelector<HTMLFormElement>('#request-form')!;
+const type=document.querySelector<HTMLSelectElement>('#inquiry-type')!;
+const support=document.querySelector<HTMLFieldSetElement>('#support-fields')!;
+const general=document.querySelector<HTMLFieldSetElement>('#general-fields')!;
+const service=document.querySelector<HTMLSelectElement>('#request-service')!;
+const timing=document.querySelector<HTMLSelectElement>('#request-timing')!;
+const preferred=document.querySelector<HTMLElement>('#preferred-field')!;
+const preferredInput=preferred.querySelector('input')!;
+const rate=document.querySelector<HTMLElement>('#rate-preview')!;
+const button=document.querySelector<HTMLButtonElement>('#request-submit')!;
+const status=document.querySelector<HTMLElement>('#request-status')!;
+const messageLabel=document.querySelector<HTMLElement>('#message-label')!;
+const rates:Record<string,number[]>={'Personal technology':[36,60],'Business software':[48,84],'Advanced IT':[72,108],'AI & automation':[96,144]};
+function sync(){const isSupport=type.value==='Tech support';support.hidden=!isSupport;support.disabled=!isSupport;general.hidden=isSupport;general.disabled=isSupport;preferred.hidden=timing.value!=='Schedule ahead';preferredInput.disabled=preferred.hidden||!isSupport;button.textContent=isSupport?'Request tech help':'Send inquiry';messageLabel.textContent=isSupport?'Describe the issue':'Your message';const pair=rates[service.value];rate.hidden=!isSupport||!pair;rate.textContent=pair?(timing.value==='As soon as available'?'Planned on-demand rate: $'+pair[1]+'/hr':timing.value==='Schedule ahead'?'Planned scheduled rate: $'+pair[0]+'/hr':'Planned rates: $'+pair[0]+'/hr scheduled · $'+pair[1]+'/hr on demand')+' · billed by the minute':'';}
+const params=new URLSearchParams(location.search);if(params.get('type')==='general')type.value='General inquiry';const s=params.get('service');if(s&&Array.from(service.options).some(o=>o.value===s))service.value=s;form.addEventListener('change',sync);sync();
+form.addEventListener('submit',async e=>{e.preventDefault();if(button.disabled)return;button.disabled=true;status.textContent='Sending…';try{const data=new FormData(form);const response=await fetch(form.action,{method:'POST',body:data,headers:{Accept:'application/json'}});const payload=await response.json().catch(()=>null);if(response.ok){location.assign('/thank-you/');return;}status.textContent=Array.isArray(payload?.errors)?payload.errors.map((x:{message?:string})=>x.message).filter(Boolean).join('; ')||'Unable to send your request. Please try again.':'Unable to send your request. Please try again.';}catch{status.textContent='Unable to connect. Please try again.';}finally{button.disabled=false;}});
+</script>
