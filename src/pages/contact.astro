@@ -8,7 +8,7 @@ import Base from '../layouts/Base.astro';
 <fieldset id="support-fields"><legend>Support details</legend>
 <label>Service<select id="request-service" name="service" required><option value="">Select a service</option><option>Personal technology</option><option>Business software</option><option>Advanced IT</option><option>AI &amp; automation</option><option>Not sure</option></select></label>
 <label>When do you need help?<select name="timing" id="request-timing" required><option value="">Select a preference</option><option>As soon as available</option><option>Schedule ahead</option><option>Flexible</option></select></label>
-<label id="preferred-field" hidden>Preferred date or time (optional)<input name="preferred_time" placeholder="e.g. Tuesday afternoon, Arizona time" maxlength="160" disabled/></label>
+<label id="preferred-field" hidden>Preferred date or time, including time zone (optional)<input name="preferred_time" placeholder="e.g. Tuesday afternoon, Eastern time" maxlength="160" disabled/></label>
 <p id="rate-preview" class="rate-preview" aria-live="polite" hidden></p></fieldset>
 <fieldset id="general-fields" hidden disabled><legend>Inquiry details</legend><label>Topic<select name="topic" required><option value="">Select a topic</option><option>General question</option><option>Partnership</option><option>Media or research</option><option>Privacy request</option><option>Other</option></select></label></fieldset>
 <div class="request-pair"><label>Name<input name="name" autocomplete="name" required maxlength="120"/></label><label>Email<input name="email" type="email" autocomplete="email" required maxlength="254"/></label></div>
