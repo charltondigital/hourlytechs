@@ -43,3 +43,26 @@ nav a:hover,.footlinks a:hover { color: #24201e; text-decoration: underline #ff6
 .price-table thead th { border-bottom: 2px solid #ff6500; }
 .price-table tbody td:nth-child(2) strong,.eyebrow,.research .eyebrow,.guarantee .eyebrow { color: #24201e; }
 .service-icon { border: 1px solid #ff6500; }
+
+.message-link {
+  position: fixed;
+  z-index: 9;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  color: #24201e;
+  background: #ff6500;
+  box-shadow: 0 3px 12px #24201e26;
+}
+
+.message-link:hover {
+  background: #ff812e;
+}
+
+body:has(.message-link) footer {
+  padding-bottom: 84px;
+}
