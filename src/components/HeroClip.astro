@@ -3,15 +3,30 @@ const { name, alt } = Astro.props;
 ---
 <div class="hero-clip">
   <img src={`/images/${name}.webp`} alt={alt} width="640" height="640" fetchpriority="high" />
-  <video data-src={`/images/${name}.mp4`} muted playsinline preload="none" aria-hidden="true"></video>
+  <video data-src={`/images/${name}.mp4`} muted loop playsinline preload="none" aria-hidden="true"></video>
+  <button type="button" hidden>Pause video</button>
 </div>
 
 <script>
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   for (const video of document.querySelectorAll<HTMLVideoElement>('.hero-clip video')) {
+    const control = video.parentElement?.querySelector('button');
+    if (!control) continue;
+
+    let pausedByUser = false;
+    control.addEventListener('click', () => {
+      pausedByUser = !video.paused;
+      if (pausedByUser) video.pause();
+      else video.play().catch(() => {});
+    });
+    video.addEventListener('pause', () => {
+      control.textContent = 'Play video';
+    });
+
     const syncMotion = () => {
       if (reducedMotion.matches) {
+        control.hidden = true;
         video.pause();
         video.classList.remove('playing');
         return;
@@ -21,10 +36,15 @@ const { name, alt } = Astro.props;
         video.src = video.dataset.src;
       }
 
-      video.play().catch(() => {});
+      if (!pausedByUser) video.play().catch(() => {});
     };
 
-    video.addEventListener('playing', () => video.classList.add('playing'));
+    video.addEventListener('playing', () => {
+      if (reducedMotion.matches) return;
+      video.classList.add('playing');
+      control.textContent = 'Pause video';
+      control.hidden = false;
+    });
     reducedMotion.addEventListener('change', syncMotion);
     syncMotion();
   }
@@ -48,6 +68,18 @@ const { name, alt } = Astro.props;
   }
   video.playing {
     visibility: visible;
+  }
+  button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #24201e;
+    font-size: 0.75rem;
+    cursor: pointer;
   }
   @media (max-width: 600px) {
     .hero-clip { height: 260px; }
