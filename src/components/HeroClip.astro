@@ -4,7 +4,10 @@ const { name, alt } = Astro.props;
 <div class="hero-clip">
   <img src={`/images/${name}.webp`} alt={alt} width="640" height="640" fetchpriority="high" />
   <video data-src={`/images/${name}.mp4`} muted loop playsinline preload="none" aria-hidden="true"></video>
-  <button type="button" hidden>Pause video</button>
+  <button type="button" aria-label="Pause video" title="Pause video" hidden>
+    <svg class="pause-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14" /></svg>
+    <svg class="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z" /></svg>
+  </button>
 </div>
 
 <script>
@@ -21,7 +24,8 @@ const { name, alt } = Astro.props;
       else video.play().catch(() => {});
     });
     video.addEventListener('pause', () => {
-      control.textContent = 'Play video';
+      control.setAttribute('aria-label', 'Play video');
+      control.title = 'Play video';
     });
 
     const syncMotion = () => {
@@ -42,7 +46,8 @@ const { name, alt } = Astro.props;
     video.addEventListener('playing', () => {
       if (reducedMotion.matches) return;
       video.classList.add('playing');
-      control.textContent = 'Pause video';
+      control.setAttribute('aria-label', 'Pause video');
+      control.title = 'Pause video';
       control.hidden = false;
     });
     reducedMotion.addEventListener('change', syncMotion);
@@ -73,13 +78,23 @@ const { name, alt } = Astro.props;
     position: absolute;
     right: 10px;
     bottom: 10px;
-    padding: 4px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
-    color: #24201e;
-    font-size: 0.75rem;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.38);
+    color: white;
     cursor: pointer;
+    transition: background 150ms ease;
+  }
+  button[hidden] { display: none; }
+  button:hover, button:focus-visible { background: rgba(0, 0, 0, 0.75); }
+  button:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+  .play-icon, button[aria-label="Play video"] .pause-icon { display: none; }
+  button[aria-label="Play video"] .play-icon { display: block;
   }
   @media (max-width: 600px) {
     .hero-clip { height: 260px; }
